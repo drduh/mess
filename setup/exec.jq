@@ -1,5 +1,4 @@
-# https://github.com/drduh/mess
-#
+# https://github.com/drduh/mess/blob/main/setup/exec.jq
 # Endpoint Security exec projection
 # for use with: `eslogger exec | jq -c -f exec.jq`
 
