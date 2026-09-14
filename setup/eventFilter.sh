@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-#
-# https://github.com/drduh/mess
+# https://github.com/drduh/mess/blob/main/setup/eventFilter.sh
+# Read eslogger events from fifo channel, filter with jq and write to log file.
 
 set -euo pipefail
 umask 027
