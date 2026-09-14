@@ -1,76 +1,29 @@
-# Install
+# mess: macOS Endpoint Security Signals
 
-Create directory for application logs
+Currently in early development and alpha testing.
 
-```bash
-sudo mkdir -p /var/log/mess
-sudo chown root:staff /var/log/mess
-sudo chmod 750 /var/log/mess
-```
+Observe and investigate activity on your Mac, locally and privately.
 
-Create directory for fifo channel
+- **No privileges required** - Uses built-in macOS authorization to use Apple's kernel-level security framework.
+- **Fully local** - No account, no cloud integration, no server anywhere but your own Mac.
+- **Efficient and reliable** - Built with Golang without any third party depedencies.
 
-```bash
-sudo mkdir -p /usr/local/var/mess
-sudo mkfifo -m 600 /usr/local/var/mess/events.fifo
-sudo chown root:wheel /usr/local/var/mess/events.fifo
-```
+## Overview
 
-Install eventFilter.sh
+`eslogger` captures every program launch straight from Apple's Endpoint Security framework.
 
-```bash
-sudo mkdir -p /usr/local/libexec/mess
-sudo cp eventFilter.sh /usr/local/libexec/mess
-sudo chown root:wheel /usr/local/libexec/mess/eventFilter.sh
-sudo chmod 700 /usr/local/libexec/mess/eventFilter.sh
-```
+A filter distills each event and flags anything unusual.
 
-Install exec projection
+A single Go program starts a local web server bound only to your own machine (`localhost`).
+
+Open in any browser to use.
+
+## Development
+
+See [Setup](setup/README.md) to configure `eslogger` to log and filter system `exec` events in the background.
+
+Clone the repository, build and run the application:
 
 ```bash
-sudo mkdir -p /usr/local/etc/mess
-sudo cp exec.jq /usr/local/etc/mess
-sudo chown root:wheel /usr/local/etc/mess/exec.jq
-sudo chmod 700 /usr/local/etc/mess/exec.jq
-```
-
-Grant eslogger full disk access.
-
-As an administrator, open System Settings > Privacy & Security > Full Disk Access.
-
-Select Add, press <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>G</kbd> and type `/usr/bin/eslogger`
-
-Install daemons
-
-```bash
-sudo cp local.mess.eslogger.plist /Library/LaunchDaemon
-sudo chown root:wheel /Library/LaunchDaemons/local.mess.eslogger.plist
-sudo chmod 644 /Library/LaunchDaemons/local.mess.eslogger.plist
-sudo cp local.mess.filter.plist /Library/LaunchDaemon
-sudo chown root:wheel /Library/LaunchDaemons/local.mess.filter.plist
-sudo chmod 644 /Library/LaunchDaemons/local.mess.filter.plist
-```
-
-Load daemons
-
-```bash
-sudo launchctl bootstrap system /Library/LaunchDaemons/local.mess.eslogger.plist
-sudo launchctl bootstrap system /Library/LaunchDaemons/local.mess.filter.plist
-```
-
-Confirm load
-
-```console
-$ sudo launchctl list | grep local.mess
-9998	0	local.mess.filter
-9996	0	local.mess.eslogger
-
-$ ls -l /var/log/mess
-total 1208
-drwxr-x---@  8 root  staff   256B Sep 13 12:00 .
-drwxr-xr-x  45 root  wheel   1.4K Sep 13 12:00 ..
--rw-r--r--   1 root  staff     0B Sep 13 12:00 esloggerErr.log
--rw-r--r--   1 root  staff     0B Sep 13 12:00 filter.log
--rw-r--r--   1 root  staff     0B Sep 13 12:00 filterErr.log
--rw-r-----@  1 root  staff     3K Sep 13 12:00 mess-v1-macbook-20260913120000.log
+make run
 ```
