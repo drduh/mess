@@ -42,10 +42,10 @@ Grant eslogger full disk access:
 Install daemons:
 
 ```bash
-sudo cp local.mess.eslogger.plist /Library/LaunchDaemon
+sudo cp local.mess.eslogger.plist /Library/LaunchDaemons/
 sudo chown root:wheel /Library/LaunchDaemons/local.mess.eslogger.plist
 sudo chmod 644 /Library/LaunchDaemons/local.mess.eslogger.plist
-sudo cp local.mess.filter.plist /Library/LaunchDaemon
+sudo cp local.mess.filter.plist /Library/LaunchDaemons/
 sudo chown root:wheel /Library/LaunchDaemons/local.mess.filter.plist
 sudo chmod 644 /Library/LaunchDaemons/local.mess.filter.plist
 ```
@@ -69,11 +69,9 @@ Check application logs - `filterErr.log` should be empty and `mess-v1-*.log` sho
 
 ```console
 $ ls -l /var/log/mess
-total 1208
-drwxr-x---@  8 root  staff   256B Sep 13 12:00 .
-drwxr-xr-x  45 root  wheel   1.4K Sep 13 12:00 ..
+...
 -rw-r--r--   1 root  staff     0B Sep 13 12:00 esloggerErr.log
 -rw-r--r--   1 root  staff     0B Sep 13 12:00 filter.log
 -rw-r--r--   1 root  staff     0B Sep 13 12:00 filterErr.log
--rw-r-----@  1 root  staff     3K Sep 13 12:00 mess-v1-macbook-20260913120000.log
+-rw-r-----   1 root  staff     3K Sep 13 12:00 mess-v1-macbook-20260913120000.log
 ```
