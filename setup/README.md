@@ -1,5 +1,12 @@
 # Install
 
+## Prerequisites
+
+- macOS with administrator (sudo) access
+- Run all commands below from this `setup` directory
+
+## Setup
+
 Create directory for application logs:
 
 ```bash
@@ -34,10 +41,15 @@ sudo chown root:wheel /usr/local/etc/mess/exec.jq
 sudo chmod 700 /usr/local/etc/mess/exec.jq
 ```
 
-Grant eslogger full disk access:
+Grant eslogger Full Disk Access:
 
-- As an administrator, open System Settings > Privacy & Security > Full Disk Access.
-- Select Add, press <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>G</kbd> and type `/usr/bin/eslogger`
+1. Open System Settings > Privacy & Security > Full Disk Access - or run:
+
+```bash
+open "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles"
+```
+
+2. Select Add, press <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>G</kbd> and type `/usr/bin/eslogger`
 
 Install daemons:
 
@@ -45,9 +57,14 @@ Install daemons:
 sudo cp local.mess.eslogger.plist /Library/LaunchDaemons/
 sudo chown root:wheel /Library/LaunchDaemons/local.mess.eslogger.plist
 sudo chmod 644 /Library/LaunchDaemons/local.mess.eslogger.plist
+
 sudo cp local.mess.filter.plist /Library/LaunchDaemons/
 sudo chown root:wheel /Library/LaunchDaemons/local.mess.filter.plist
 sudo chmod 644 /Library/LaunchDaemons/local.mess.filter.plist
+
+sudo cp local.mess.supervisor.plist /Library/LaunchDaemons/
+sudo chown root:wheel /Library/LaunchDaemons/local.mess.supervisor.plist
+sudo chmod 644 /Library/LaunchDaemons/local.mess.supervisor.plist
 ```
 
 Load daemons:
@@ -55,7 +72,10 @@ Load daemons:
 ```bash
 sudo launchctl bootstrap system /Library/LaunchDaemons/local.mess.eslogger.plist
 sudo launchctl bootstrap system /Library/LaunchDaemons/local.mess.filter.plist
+sudo launchctl bootstrap system /Library/LaunchDaemons/local.mess.supervisor.plist
 ```
+
+## Verify
 
 Confirm daemons are loaded:
 
@@ -63,6 +83,7 @@ Confirm daemons are loaded:
 $ sudo launchctl list | grep local.mess
 9998	0	local.mess.filter
 9996	0	local.mess.eslogger
+9994	0	local.mess.supervisor
 ```
 
 Check application logs - `filterErr.log` should be empty and `mess-v1-*.log` should be receiving events:
@@ -75,3 +96,18 @@ $ ls -l /var/log/mess
 -rw-r--r--   1 root  staff     0B Sep 13 12:00 filterErr.log
 -rw-r-----   1 root  staff     3K Sep 13 12:00 mess-v1-macbook-20260913120000.log
 ```
+
+## Uninstall
+
+```bash
+sudo launchctl bootout system/local.mess.filter
+sudo launchctl bootout system/local.mess.eslogger
+sudo launchctl bootout system/local.mess.supervisor
+sudo rm /Library/LaunchDaemons/local.mess.filter.plist
+sudo rm /Library/LaunchDaemons/local.mess.eslogger.plist
+sudo rm /Library/LaunchDaemons/local.mess.supervisor.plist
+sudo rm -rf /usr/local/libexec/mess /usr/local/etc/mess /usr/local/var/mess
+sudo rm -rf /var/log/mess
+```
+
+Remove `/usr/bin/eslogger` from System Settings > Privacy & Security > Full Disk Access.
