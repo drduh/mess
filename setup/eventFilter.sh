@@ -8,18 +8,19 @@ umask 027
 APPID="mess"
 VERS="v1"
 
-VAR_DIR="/usr/local/var/${APPID}"
-FIFO="${VAR_DIR}/events.fifo"
-JQ_FILTER="/usr/local/etc/mess/exec.jq"
+JQ_FILTER="/usr/local/etc/${APPID}/exec.jq"
+[[ -f "$JQ_FILTER" ]] || { echo "filter not found: $JQ_FILTER" >&2; exit 1; }
 
-LOGS_DIR="/var/log/mess"
-LOG_FILE="${LOGS_DIR}/${APPID}-${VERS}-$(hostname)-$(date +%Y%m%d%H%M%S).log"
+DIR_LOG="/var/log/${APPID}"
+DIR_VAR="/usr/local/var/${APPID}"
+/bin/mkdir -p "${DIR_LOG}" "${DIR_VAR}"
 
-mkdir -p "$LOGS_DIR"
-mkdir -p "$VAR_DIR"
+FIFO="${DIR_VAR}/events.fifo"
+LOG_NAME="${APPID}-${VERS}-${HOSTNAME}-$(date '+%Y%m%d%H%M%S').log"
+LOG_FILE="${DIR_LOG}/${LOG_NAME}"
 
-[[ ! -p "$FIFO" ]] && mkfifo "$FIFO"
-[[ -p "$FIFO" ]] || { echo "fifo not found: $FIFO" >&2; exit 1; }
-[[ -f "$JQ_FILTER" ]] || { echo "jq not found: $JQ_FILTER" >&2; exit 1; }
+[[ -p "$FIFO" ]] || /usr/bin/mkfifo "$FIFO"
 
-exec /usr/bin/jq -c --unbuffered -f "$JQ_FILTER" < "$FIFO" >> "$LOG_FILE"
+/bin/launchctl kickstart system/local.mess.eslogger && \
+  exec /usr/bin/jq --compact-output --unbuffered \
+    --from-file "$JQ_FILTER" < "$FIFO" >> "$LOG_FILE"
