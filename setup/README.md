@@ -67,10 +67,9 @@ sudo chown root:wheel /Library/LaunchDaemons/local.mess.supervisor.plist
 sudo chmod 644 /Library/LaunchDaemons/local.mess.supervisor.plist
 ```
 
-Load daemons:
+Load daemons (`local.mess.filter` will start `local.mess.eslogger`):
 
 ```bash
-sudo launchctl bootstrap system /Library/LaunchDaemons/local.mess.eslogger.plist
 sudo launchctl bootstrap system /Library/LaunchDaemons/local.mess.filter.plist
 sudo launchctl bootstrap system /Library/LaunchDaemons/local.mess.supervisor.plist
 ```
