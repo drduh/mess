@@ -1,9 +1,11 @@
 # https://github.com/drduh/mess/blob/main/Makefile
 ROOT         = mess
 
+ARG          =
 PKG          = ./...
 SRC          = cmd/$(ROOT)/main.go
 
+GOCMD       ?= go
 GOLINT      ?= golangci-lint
 GOLINTARG    =
 GOSEC       ?= gosec
@@ -23,10 +25,11 @@ prep:
 	@mkdir -p $(RELEASE_DIR)
 
 build: prep
-	@GOOS=darwin GOARCH=arm64 go build -o $(TARGET) $(SRC)
+	@GOOS=darwin GOARCH=arm64 $(GOCMD) build -o $(TARGET) $(SRC)
 
-run: build
-	@./$(TARGET) \
+version: ARG += -version
+run version: build
+	@./$(TARGET) $(ARG) \
 		-dir /var/log/mess \
 		-pattern "mess-v1-*.log" \
 		-serve 127.0.0.1:8000
@@ -44,3 +47,12 @@ lint-verbose: GOLINTARG = --verbose
 lint lint-verbose:
 	@printf "linting ... "
 	@$(call RUN_IF_FOUND,$(GOLINT),run $(GOLINTARG) $(PKG))
+
+sec:
+	@$(call RUN_IF_FOUND,$(GOSEC),$(PKG))
+
+static:
+	@$(call RUN_IF_FOUND,$(GOSTATIC),$(PKG))
+
+fmt:
+	@$(GOCMD) fmt $(PKG)
