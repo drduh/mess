@@ -30,7 +30,7 @@ func Parse() Config {
 		"directory to read eslogger logs from")
 	flag.StringVar(&c.Pattern, "pattern", "mess-v1-*.log",
 		"glob for log file names within -dir")
-	flag.StringVar(&c.Serve, "serve", "127.0.0.1:8080",
+	flag.StringVar(&c.Serve, "serve", "",
 		"listen address for web interface, such as localhost:8080")
 	flag.StringVar(&c.ErrLog, "errlog", "filterErr.log",
 		"filter error output, a file within -dir; empty to skip")

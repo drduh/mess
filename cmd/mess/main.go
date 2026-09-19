@@ -8,6 +8,8 @@ import (
 
 	"github.com/drduh/mess/internal/config"
 	"github.com/drduh/mess/internal/event"
+	"github.com/drduh/mess/internal/pids"
+	"github.com/drduh/mess/internal/processing"
 	"github.com/drduh/mess/internal/server"
 )
 
@@ -46,5 +48,9 @@ func run() error {
 			fmt.Printf("  %s:%d  %s\n", b.File, b.Line, b.Why)
 		}
 	}
+
+	processing.Analyze(pids.Over(loaded.Events)).Print(os.Stdout)
+	processing.PrintActivity(os.Stdout, processing.BuildTimeline(loaded.Events, 60, 10, nil))
+
 	return nil
 }

@@ -1,7 +1,13 @@
 // Package event defines events written by the eslogger pipeline.
 package event
 
-import "time"
+import (
+	"path"
+	"strings"
+	"time"
+)
+
+const NoAUID = ^uint32(0)
 
 type Event struct {
 	Time time.Time `json:"time"`
@@ -47,4 +53,28 @@ type Target struct {
 	Owner  uint32    `json:"owner,omitempty"` // st_uid
 	Mode   uint32    `json:"mode,omitempty"`  // st_mode
 	Flags  uint32    `json:"flags,omitempty"` // st_flags
+}
+
+func (t Target) Known() bool { return t.Path != "" }
+
+func (e *Event) Image() string {
+	if e.Target.Known() {
+		return e.Target.Path
+	}
+	return e.Argv0()
+}
+
+func (e *Event) Argv0() string {
+	if len(e.Cmd) > 0 && e.Cmd[0] != "" {
+		return e.Cmd[0]
+	}
+	return "(no argv)"
+}
+
+func (e *Event) ResolvedArgv0() string {
+	a := e.Argv0()
+	if e.CWD == "" || !strings.Contains(a, "/") || strings.HasPrefix(a, "/") {
+		return ""
+	}
+	return path.Join(e.CWD, a)
 }
