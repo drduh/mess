@@ -39,5 +39,12 @@ func run() error {
 	}
 	fmt.Printf("loaded %d events from %d files\n", len(loaded.Events), len(loaded.Files))
 
+	if loaded.BadTotal > 0 {
+		fmt.Printf("skipped %d line%s that did not decode\n",
+			loaded.BadTotal, map[bool]string{true: "", false: "s"}[loaded.BadTotal == 1])
+		for _, b := range loaded.Bad {
+			fmt.Printf("  %s:%d  %s\n", b.File, b.Line, b.Why)
+		}
+	}
 	return nil
 }

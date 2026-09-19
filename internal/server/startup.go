@@ -48,6 +48,10 @@ func Listen(addr string, dir string, fsys fs.FS, pattern, errLog string) error {
 	serving := make(chan error, 1)
 	go func() { serving <- srv.Serve(ln) }()
 
+	if err := s.Reload(); err != nil {
+		_ = srv.Close()
+		return err
+	}
 	s.onRead = nil
 
 	return <-serving
