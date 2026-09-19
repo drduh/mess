@@ -25,7 +25,6 @@ func (s stamped) Write(p []byte) (int, error) {
 	return s.w.Write(p)
 }
 
-// Listen serves the interface on addr until the process is stopped.
 func Listen(addr string, dir string, fsys fs.FS, pattern, errLog string) error {
 	log.SetFlags(0)
 	log.SetOutput(stamped{os.Stderr})
@@ -39,9 +38,9 @@ func Listen(addr string, dir string, fsys fs.FS, pattern, errLog string) error {
 		return err
 	}
 	srv := &http.Server{
+		Handler:           s.Handler(addr),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
-
 	fmt.Printf("serving on http://%s\n", addr)
 	if !loopback(addr) {
 		fmt.Printf("warning: %s is not loopback!", addr)

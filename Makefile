@@ -19,7 +19,7 @@ TARGET      := $(RELEASE_DIR)/$(BINARY_NAME)-$(VERSION)-$(PLATFORM)
 
 .PHONY: build run prep clean
 
-all: run
+all: fmt run
 
 prep:
 	@mkdir -p $(RELEASE_DIR)
@@ -32,7 +32,7 @@ run version: build
 	@./$(TARGET) $(ARG) \
 		-dir /var/log/mess \
 		-pattern "mess-v1-*.log" \
-		-serve 127.0.0.1:8000
+		-serve 127.0.0.1:8080
 
 clean:
 	rm -f $(RELEASE_DIR)/$(BINARY_NAME)-*

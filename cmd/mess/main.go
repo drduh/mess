@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/drduh/mess/internal/config"
+	"github.com/drduh/mess/internal/event"
 	"github.com/drduh/mess/internal/server"
 )
 
@@ -31,6 +32,12 @@ func run() error {
 	if cfg.Serve != "" {
 		return server.Listen(cfg.Serve, cfg.Dir, root.FS(), cfg.Pattern, cfg.ErrLog)
 	}
+
+	loaded, err := event.Load(root.FS(), cfg.Pattern)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("loaded %d events from %d files\n", len(loaded.Events), len(loaded.Files))
 
 	return nil
 }
