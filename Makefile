@@ -28,7 +28,7 @@ build: prep
 	@GOOS=darwin GOARCH=arm64 $(GOCMD) build -o $(TARGET) $(SRC)
 
 version: ARG += -version
-server: ARG += -server 127.0.0.1:8080
+server: ARG += -serve 127.0.0.1:8080
 
 run server version: build
 	@./$(TARGET) $(ARG) \
@@ -57,3 +57,5 @@ static:
 
 fmt:
 	@$(GOCMD) fmt $(PKG)
+
+serve: server
