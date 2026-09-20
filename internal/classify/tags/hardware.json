@@ -1,0 +1,30 @@
+{
+  "about": "bluetooth, usb, printing, power, sensors",
+  "category": "hardware",
+  "names": [
+    "BatteriesAvocadoWidgetExtension",
+    "EAUpdaterService",
+    "GameControllerConfigService",
+    "PerfPowerServices",
+    "VDCAssistant",
+    "bluetoothd",
+    "com.apple.AppleUserHIDDrivers",
+    "com.apple.DriverKit-AppleBCMWLAN",
+    "com.apple.DriverKit-IOUserDockChannelSerial",
+    "corebrightnessd",
+    "cupsd",
+    "deviceinterfaced",
+    "fudHelperAgent",
+    "gamecontrolleragentd",
+    "gamecontrollerd",
+    "hidd",
+    "iBridgeDiscovery",
+    "icdd",
+    "nfcd",
+    "pmset",
+    "powerd",
+    "printtool",
+    "thermald",
+    "usbd"
+  ]
+}

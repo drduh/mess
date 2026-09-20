@@ -1,0 +1,23 @@
+{
+  "about": "calendars, contacts, notes, documents",
+  "category": "productivity",
+  "names": [
+    "AppleSpell",
+    "Calendar",
+    "CalendarAgent",
+    "Contacts",
+    "LinkedNotesUIService",
+    "LookupViewService",
+    "Notes",
+    "Reminders",
+    "Stickies",
+    "TextEdit",
+    "calaccessd",
+    "com.apple.DictionaryServiceHelper",
+    "contactsd",
+    "nsattributedstringagent",
+    "peopled",
+    "remindd",
+    "soffice"
+  ]
+}

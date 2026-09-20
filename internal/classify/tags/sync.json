@@ -1,0 +1,19 @@
+{
+  "about": "cloud sync and its daemons",
+  "category": "sync",
+  "apps": [
+    "dropbox",
+    "google drive"
+  ],
+  "names": [
+    "AOSHeartbeat",
+    "biomed",
+    "biomesyncd",
+    "dataaccessd",
+    "familycircled",
+    "fileproviderd",
+    "nsurlsessiond",
+    "replicatord",
+    "useractivityd"
+  ]
+}

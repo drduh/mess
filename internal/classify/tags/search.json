@@ -1,0 +1,18 @@
+{
+  "about": "Spotlight and metadata indexing",
+  "category": "search",
+  "names": [
+    "CategoriesService",
+    "Spotlight",
+    "corespotlightd",
+    "mdfind",
+    "mdls",
+    "mds",
+    "mds_stores",
+    "mdworker",
+    "mdworker_shared",
+    "mdwrite",
+    "parsec-fbf",
+    "suggestd"
+  ]
+}

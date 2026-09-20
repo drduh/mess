@@ -1,0 +1,23 @@
+{
+  "about": "the window system, Dock, Finder and menu bar",
+  "category": "desktop",
+  "names": [
+    "ControlCenter",
+    "DesktopServicesHelper",
+    "Dock",
+    "Finder",
+    "NotificationCenter",
+    "OSDUIHelper",
+    "ShareSheetUI",
+    "SystemUIServer",
+    "Ventura",
+    "ViewBridgeAuxiliary",
+    "WallpaperAgent",
+    "WindowManager",
+    "WindowServer",
+    "imklaunchagent",
+    "loginwindow",
+    "screencapture",
+    "screencaptureui"
+  ]
+}

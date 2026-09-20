@@ -3,7 +3,7 @@
   "category": "terminal",
   "apps": [
     "iterm",
-    "iterm2",
+    "iterm2"
   ],
   "names": [
     "bash",
