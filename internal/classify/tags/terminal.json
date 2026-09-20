@@ -1,0 +1,36 @@
+{
+  "about": "terminal emulators and multiplexers",
+  "category": "terminal",
+  "apps": [
+    "iterm",
+    "iterm2",
+  ],
+  "names": [
+    "bash",
+    "comm",
+    "lockf",
+    "login",
+    "mkfifo",
+    "mktemp",
+    "path_helper",
+    "pkill",
+    "screen",
+    "sh",
+    "sha256",
+    "shlock",
+    "stty",
+    "tmux",
+    "tput",
+    "truncate",
+    "tset",
+    "tty",
+    "uptime",
+    "zipinfo",
+    "zsh"
+  ],
+  "details": [
+    {"name":"bash","role":"shell"},
+    {"name":"sh","role":"shell"},
+    {"name":"zsh","role":"shell"}
+  ]
+}

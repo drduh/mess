@@ -1,0 +1,16 @@
+{
+  "about": "location services",
+  "category": "location",
+  "names": [
+    "CoreLocationAgent",
+    "countryd",
+    "geodMachServiceBridge",
+    "griddatad",
+    "locationaccessstored",
+    "milod",
+    "parsecd",
+    "routined",
+    "tzd",
+    "weatherd"
+  ]
+}

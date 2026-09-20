@@ -1,0 +1,25 @@
+{
+  "about": "web browsers and helper processes",
+  "category": "browser",
+  "apps": [
+    "brave browser",
+    "chromium",
+    "firefox",
+    "google chrome",
+    "opera",
+    "safari"
+  ],
+  "names": [
+    "Brave Browser Helper",
+    "Google Chrome Helper",
+    "chrome",
+    "chromium",
+    "com.apple.WebKit.GPU",
+    "com.apple.WebKit.Networking",
+    "com.apple.WebKit.WebContent",
+    "firefox",
+    "plugin-container",
+    "safari",
+    "webprivacyd"
+  ]
+}

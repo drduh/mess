@@ -1,0 +1,31 @@
+{
+  "about": "Siri, speech and dictation",
+  "category": "assistant",
+  "names": [
+    "AppPredictionIntentsHelperService",
+    "BackgroundShortcutRunner",
+    "ContextStoreAgent",
+    "DataDetectorsLocalSources",
+    "DataDetectorsSourceAccess",
+    "IntelligencePlatformComputeService",
+    "Siri",
+    "assistantd",
+    "corespeechd",
+    "duetexpertd",
+    "generativeexperiencesd",
+    "intelligenceplatformd",
+    "intelligentroutingd",
+    "intents_helper",
+    "knowledge-agent",
+    "knowledgeconstructiond",
+    "linkd",
+    "naturallanguaged",
+    "ospredictiond",
+    "proactived",
+    "proactiveeventtrackerd",
+    "reversetemplated",
+    "siriactionsd",
+    "siriknowledged",
+    "translationd"
+  ]
+}

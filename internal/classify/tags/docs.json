@@ -1,0 +1,16 @@
+{
+  "about": "manuals and the tools that render them",
+  "category": "docs",
+  "names": [
+    "apropos",
+    "groff",
+    "info",
+    "makewhatis",
+    "man",
+    "mandoc",
+    "manpath",
+    "nroff",
+    "troff",
+    "whatis"
+  ]
+}

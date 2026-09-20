@@ -1,0 +1,26 @@
+{
+  "about": "mail, chat, calls",
+  "category": "comms",
+  "apps": [
+    "discord",
+    "mail",
+    "slack",
+    "thunderbird",
+    "zoom.us"
+  ],
+  "names": [
+    "CallHistoryPluginHelper",
+    "ContinuityCaptureAgent",
+    "IMAutomaticHistoryDeletionAgent",
+    "IMDPersistenceAgent",
+    "avconferenced",
+    "cleanup",
+    "imagent",
+    "local",
+    "master",
+    "pickup",
+    "postdrop",
+    "qmgr",
+    "sendmail"
+  ]
+}

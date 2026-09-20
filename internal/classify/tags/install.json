@@ -1,0 +1,24 @@
+{
+  "about": "installers and software updates",
+  "category": "install",
+  "names": [
+    "Autoupdate",
+    "RepackagingWorker",
+    "appinstalld",
+    "appstored",
+    "backgroundassets.user",
+    "betaenrollmentagent",
+    "betaenrollmentd",
+    "commerce",
+    "installcoordinationd",
+    "installd",
+    "installer",
+    "mobileassetd",
+    "nbagent",
+    "pkgutil",
+    "softwareupdate",
+    "softwareupdated",
+    "storedownloadd",
+    "suhelperd"
+  ]
+}

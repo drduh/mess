@@ -1,0 +1,19 @@
+{
+  "about": "System Settings, preference panes, the defaults database",
+  "category": "settings",
+  "names": [
+    "DefaultExtensionEnablement",
+    "LoginItems",
+    "ManagedClient",
+    "ManagedSettingsAgent",
+    "ManagedSettingsSubscriber",
+    "SetStoreUpdateService",
+    "activateSettings",
+    "cfprefsd",
+    "defaults",
+    "localizationswitcherd",
+    "loginitemregisterd",
+    "mdmclient",
+    "systemsetup"
+  ]
+}
