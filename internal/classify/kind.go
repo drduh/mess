@@ -30,7 +30,7 @@ func Kind(name, path string) string {
 	switch {
 	case isHelper(name):
 		return KindHelper
-	case strings.HasSuffix(name, "Agent") ||strings.HasSuffix(name, "agent"):
+	case strings.HasSuffix(name, "Agent") || strings.HasSuffix(name, "agent"):
 		return KindAgent
 	}
 

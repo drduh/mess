@@ -27,13 +27,13 @@ prep:
 build: prep
 	@GOOS=darwin GOARCH=arm64 $(GOCMD) build -o $(TARGET) $(SRC)
 
+server:  ARG += -serve 127.0.0.1:8080
 version: ARG += -version
-server: ARG += -serve 127.0.0.1:8080
 
 run server version: build
 	@./$(TARGET) $(ARG) \
-		-dir /var/log/mess \
-		-pattern "mess-v1-*.log"
+		-dir /var/log/$(ROOT) \
+		-pattern "$(ROOT)-v1-*.log"
 
 clean:
 	rm -f $(RELEASE_DIR)/$(BINARY_NAME)-*
