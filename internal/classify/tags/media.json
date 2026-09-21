@@ -1,0 +1,29 @@
+{
+  "about": "audio, video, photos",
+  "category": "media",
+  "apps": [
+    "music",
+    "quicktime player",
+    "spotify",
+    "vlc"
+  ],
+  "names": [
+    "AMPArtworkAgent",
+    "AMPDeviceDiscoveryAgent",
+    "AMPLibraryAgent",
+    "AVConference",
+    "PodcastContentService",
+    "Preview",
+    "amsondevicestoraged",
+    "com.apple.BKAgentService",
+    "coreaudiod",
+    "idleassetsd",
+    "mediaanalysisd",
+    "photoanalysisd",
+    "photolibraryd",
+    "replayd",
+    "systemsoundserverd",
+    "videosubscriptionsd",
+    "watchlistd"
+  ]
+}

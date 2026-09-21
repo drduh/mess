@@ -1,0 +1,13 @@
+{
+  "about": "assistive technology",
+  "category": "accessibility",
+  "names": [
+    "AXVisualSupportAgent",
+    "CursorUIViewService",
+    "MacinTalkAUSP",
+    "VoiceOver",
+    "accessibilityd",
+    "heard",
+    "universalaccessd"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "about": "on-device machine learning",
+  "category": "ml",
+  "names": [
+    "ANECompilerService",
+    "ANEStorageMaintainer",
+    "ModelCatalogAgent",
+    "aned",
+    "aneuserd",
+    "mlhostd",
+    "mlruntimed",
+    "modelcatalogd",
+    "modelmanagerd"
+  ]
+}

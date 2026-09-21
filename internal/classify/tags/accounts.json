@@ -1,0 +1,12 @@
+{
+  "about": "Apple ID, signing in, and account database behind it",
+  "category": "accounts",
+  "names": [
+    "AccountSubscriber",
+    "accountsd",
+    "adid",
+    "akd",
+    "appleaccountd",
+    "online-auth-agent"
+  ]
+}

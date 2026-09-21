@@ -1,0 +1,17 @@
+{
+  "about": "kernel and system extensions, and tools to load and inspect them",
+  "category": "kernel",
+  "names": [
+    "kernelmanagerd",
+    "kextcache",
+    "kextd",
+    "kextload",
+    "kextstat",
+    "kextunload",
+    "kmutil",
+    "logkextloadsd",
+    "mmaintenanced",
+    "nvram",
+    "systemextensionsctl"
+  ]
+}

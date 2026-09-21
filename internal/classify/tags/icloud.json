@@ -1,0 +1,11 @@
+{
+  "about": "Apple iCloud services: Drive, Photos, Keychain, Mail",
+  "category": "icloud",
+  "names": [
+    "CloudKeychainProxy",
+    "bird",
+    "cloudd",
+    "cloudphotod",
+    "icloudmailagent"
+  ]
+}
