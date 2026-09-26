@@ -3,21 +3,34 @@ package classify
 import "strings"
 
 const (
-	KindApp       = "app"       // main binary of .app bundle
-	KindExtension = "extension" // app extension
-	KindXPC       = "xpc"       // xpc service
-	KindHelper    = "helper"    // helper process inside a bundle
 	KindAgent     = "agent"     // runs in a user session
+	KindApp       = "app"       // main binary of .app bundle
 	KindDaemon    = "daemon"    // runs in the background, usually as root
+	KindExtension = "extension" // app extension
 	KindFramework = "framework" // support binary inside a .framework
+	KindHelper    = "helper"    // helper process inside a bundle
 	KindTool      = "tool"      // command line program
+	KindXPC       = "xpc"       // xpc service
 )
 
-var daemonDirs = []string{"/usr/libexec/", "/usr/sbin/", "/sbin/",
-	"/System/Library/CoreServices/", "/Library/Apple/System/Library/CoreServices/"}
+var daemonDirs = []string{
+	"/sbin/",
+	"/usr/sbin/",
+	"/usr/libexec/",
+	"/System/Library/CoreServices/",
+	"/Library/Apple/System/Library/CoreServices/",
+}
 
-var toolDirs = []string{"/usr/bin/", "/bin/", "/opt/homebrew/bin/", "/opt/homebrew/sbin/",
-	"/usr/local/bin/", "/usr/local/sbin/", "/opt/local/bin/", "/opt/homebrew/Cellar/"}
+var toolDirs = []string{
+	"/bin/",
+	"/usr/bin/",
+	"/usr/local/bin/",
+	"/usr/local/sbin/",
+	"/opt/local/bin/",
+	"/opt/homebrew/bin/",
+	"/opt/homebrew/sbin/",
+	"/opt/homebrew/Cellar/",
+}
 
 func Kind(name, path string) string {
 	switch {
@@ -63,9 +76,7 @@ func Kind(name, path string) string {
 
 func isHelper(name string) bool {
 	lower := strings.ToLower(name)
-	return strings.HasSuffix(lower, "helper") ||
-		strings.HasSuffix(lower, "-helper") ||
-		strings.HasSuffix(lower, "_helper")
+	return strings.HasSuffix(lower, "helper")
 }
 
 func hasAny(s string, prefixes []string) bool {
@@ -74,5 +85,6 @@ func hasAny(s string, prefixes []string) bool {
 			return true
 		}
 	}
+
 	return false
 }

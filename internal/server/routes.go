@@ -31,11 +31,13 @@ func (s *Server) Handler(addr string) http.Handler {
 func logRequests(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
+
 		rec := &logged{ResponseWriter: w}
 		next.ServeHTTP(rec, r)
 		if rec.status == 0 {
 			rec.status = http.StatusOK
 		}
+
 		log.Printf("%s %s %d %dB %s",
 			forLog(r.Method), forLog(r.URL.RequestURI()), rec.status, rec.bytes,
 			time.Since(start).Round(time.Microsecond))
@@ -47,14 +49,18 @@ func forLog(s string) string {
 		if r < 0x20 || r == 0x7f {
 			return -1
 		}
+
 		return r
 	}, s)
+
 	if len(s) > logLine {
 		r := []rune(s)
 		if len(r) > logLine {
 			r = r[:logLine]
 		}
+
 		return string(r) + "..."
 	}
+
 	return s
 }

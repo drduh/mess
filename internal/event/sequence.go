@@ -36,7 +36,8 @@ func SeqWalk(events []Event, gap func(prev, cur Event, lost int), run func(cur E
 
 	for i := range events {
 		if events[i].Seq != 0 {
-			byFile[events[i].File] = append(byFile[events[i].File], &events[i])
+			byFile[events[i].File] = append(
+				byFile[events[i].File], &events[i])
 		}
 	}
 
