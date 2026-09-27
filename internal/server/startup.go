@@ -22,6 +22,7 @@ func (s stamped) Write(p []byte) (int, error) {
 	if _, err := io.WriteString(s.w, time.Now().Format(StampLayout)+" "); err != nil {
 		return 0, err
 	}
+
 	return s.w.Write(p)
 }
 
@@ -37,14 +38,17 @@ func Listen(addr string, dir string, fsys fs.FS, pattern, errLog string) error {
 	if err != nil {
 		return err
 	}
+
 	srv := &http.Server{
 		Handler:           s.Handler(addr),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
+
 	fmt.Printf("serving on http://%s\n", addr)
 	if !loopback(addr) {
 		fmt.Printf("warning: %s is not loopback!", addr)
 	}
+
 	serving := make(chan error, 1)
 	go func() { serving <- srv.Serve(ln) }()
 
@@ -52,6 +56,7 @@ func Listen(addr string, dir string, fsys fs.FS, pattern, errLog string) error {
 		_ = srv.Close()
 		return err
 	}
+
 	s.onRead = nil
 
 	return <-serving
@@ -63,12 +68,16 @@ func loopback(addr string) bool {
 	if err != nil {
 		host = addr
 	}
+
 	if host == "" {
 		return false
 	}
+
 	if host == "localhost" {
 		return true
 	}
+
 	ip := net.ParseIP(host)
+
 	return ip != nil && ip.IsLoopback()
 }

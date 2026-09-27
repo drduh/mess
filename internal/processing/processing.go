@@ -7,6 +7,7 @@ import (
 	"github.com/drduh/mess/internal/classify"
 	"github.com/drduh/mess/internal/pids"
 	"github.com/drduh/mess/internal/signals"
+	"github.com/drduh/mess/internal/signals/rules"
 	"github.com/drduh/mess/internal/tally"
 )
 
@@ -166,7 +167,7 @@ func Analyze(c pids.Capture) Report {
 	r.UniqueCallers = len(callers)
 	r.UniqueImages = len(images)
 	r.Unsigned = unsigned.Top(topN)
-	r.Signals = signals.Build(c, r.First, r.Last, signalBuckets)
+	r.Signals = signals.Build(rules.All, c, r.First, r.Last, signalBuckets)
 
 	multi := []Count{}
 	for sign, seen := range paths {

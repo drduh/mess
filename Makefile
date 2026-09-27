@@ -17,8 +17,6 @@ PLATFORM    := arm64-darwin
 RELEASE_DIR := release
 TARGET      := $(RELEASE_DIR)/$(BINARY_NAME)-$(VERSION)-$(PLATFORM)
 
-.PHONY: build run prep clean
-
 all: fmt run
 
 prep:
@@ -36,7 +34,7 @@ run server version: build
 		-pattern "$(ROOT)-v1-*.log"
 
 clean:
-	rm -f $(RELEASE_DIR)/$(BINARY_NAME)-*
+	@rm -rf -- "$(RELEASE_DIR)"
 
 WARN         = tput setaf 3 ; printf "%s\n" "${1}" ; tput sgr0
 RUN_IF_FOUND = if command -v $(1) >/dev/null 2>&1 ; \
@@ -58,4 +56,5 @@ static:
 fmt:
 	@$(GOCMD) fmt $(PKG)
 
+r: run
 serve: server
