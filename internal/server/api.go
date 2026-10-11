@@ -13,6 +13,7 @@ import (
 type capture struct {
 	Events  int       `json:"events"` // inside the window
 	Total   int       `json:"total"`  // in the whole capture
+	Window  string    `json:"window"` // as asked for, empty for all
 	Files   []string  `json:"files"`
 	First   time.Time `json:"first"`
 	Last    time.Time `json:"last"`
@@ -20,10 +21,11 @@ type capture struct {
 	Read    time.Time `json:"read"`
 }
 
-func describe(snap *snapshot, d *derived) capture {
+func describe(snap *snapshot, d *derived, raw string) capture {
 	return capture{
 		Events:  len(d.events),
 		Total:   len(snap.loaded.Events),
+		Window:  raw,
 		Files:   snap.loaded.Files,
 		First:   d.report.First,
 		Last:    d.report.Last,
@@ -32,16 +34,9 @@ func describe(snap *snapshot, d *derived) capture {
 	}
 }
 
-// view is the snapshot and analysis a request is answered from.
-func (s *Server) view(r *http.Request) (*snapshot, *derived) {
-	snap := s.current()
-
-	return snap, snap.view(0)
-}
-
 func (s *Server) handleCapture(w http.ResponseWriter, r *http.Request) {
-	snap, d := s.view(r)
-	writeJSON(w, describe(snap, d))
+	snap, d, _ := s.view(r)
+	writeJSON(w, describe(snap, d, r.URL.Query().Get("since")))
 }
 
 // handleReload re-reads the directory and reports what is now loaded.
@@ -51,12 +46,12 @@ func (s *Server) handleReload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	snap, d := s.view(r)
-	writeJSON(w, describe(snap, d))
+	snap, d, _ := s.view(r)
+	writeJSON(w, describe(snap, d, r.URL.Query().Get("since")))
 }
 
 func (s *Server) handleReport(w http.ResponseWriter, r *http.Request) {
-	_, d := s.view(r)
+	_, d, _ := s.view(r)
 	writeJSON(w, d.report)
 }
 

@@ -43,7 +43,7 @@ func (s *Server) Handler(addr string) http.Handler {
 	mux.HandleFunc("POST /api/reload", s.handleReload)
 	mux.HandleFunc("GET /api/report", s.handleReport)
 
-	return logRequests(s.ready(mux))
+	return logRequests(s.ready(checkWindow(mux)))
 }
 
 func (s *Server) ready(next http.Handler) http.Handler {
