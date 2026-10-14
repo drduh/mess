@@ -16,6 +16,21 @@ type logged struct {
 	status, bytes int
 }
 
+func (l *logged) WriteHeader(code int) {
+	l.status = code
+	l.ResponseWriter.WriteHeader(code)
+}
+
+func (l *logged) Write(b []byte) (int, error) {
+	if l.status == 0 {
+		l.status = http.StatusOK
+	}
+	n, err := l.ResponseWriter.Write(b)
+	l.bytes += n
+
+	return n, err
+}
+
 func (s *Server) Handler(addr string) http.Handler {
 	static, err := fs.Sub(assets, "static")
 	if err != nil {
@@ -24,8 +39,23 @@ func (s *Server) Handler(addr string) http.Handler {
 
 	mux := http.NewServeMux()
 	mux.Handle("GET /", http.FileServer(http.FS(static)))
+	mux.HandleFunc("GET /api/capture", s.handleCapture)
+	mux.HandleFunc("POST /api/reload", s.handleReload)
+	mux.HandleFunc("GET /api/report", s.handleReport)
 
-	return logRequests(mux)
+	return logRequests(s.ready(checkWindow(mux)))
+}
+
+func (s *Server) ready(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasPrefix(r.URL.Path, "/api/") && s.current() == nil {
+			w.Header().Set("Retry-After", "1")
+			http.Error(w, "reading the capture", http.StatusServiceUnavailable)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func logRequests(next http.Handler) http.Handler {

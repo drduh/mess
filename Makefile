@@ -17,6 +17,10 @@ PLATFORM    := arm64-darwin
 RELEASE_DIR := release
 TARGET      := $(RELEASE_DIR)/$(BINARY_NAME)-$(VERSION)-$(PLATFORM)
 
+TESTCMD      = $(GOCMD) test -trimpath
+ARG_TEST    ?=
+TESTTIME    ?= 1m
+
 all: fmt run
 
 prep:
@@ -55,6 +59,14 @@ static:
 
 fmt:
 	@$(GOCMD) fmt $(PKG)
+
+test-race:    ARG_TEST = -race
+test-short:   ARG_TEST = -short
+test-verbose: ARG_TEST = -v
+
+test test-race test-short test-verbose:
+	@$(TESTCMD) $(ARG_TEST) -timeout=$(TESTTIME) $(PKG)
+
 
 r: run
 serve: server
