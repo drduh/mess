@@ -43,6 +43,7 @@ func (s *Server) Handler(addr string) http.Handler {
 	mux.HandleFunc("GET /api/capture", s.handleCapture)
 	mux.HandleFunc("POST /api/reload", s.handleReload)
 	mux.HandleFunc("GET /api/report", s.handleReport)
+	mux.HandleFunc("GET /api/timeline", s.handleTimeline)
 
 	// Recover inside the log, outside everything else.
 	return logRequests(recovering(s.ready(checkWindow(mux))))

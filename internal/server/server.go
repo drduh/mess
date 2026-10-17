@@ -16,6 +16,13 @@ import (
 //go:embed static/*.html
 var assets embed.FS
 
+// How much detail the derived views carry.
+const (
+	buckets = 120 // columns across the capture window
+	tracks  = 24  // binaries charted on the timeline
+	strips  = 48  // columns in the per-binary strips
+)
+
 const (
 	// Windows whose analysis is kept before the cache is started over.
 	windowCache = 12
@@ -99,10 +106,11 @@ func (p *pending) get(build func() *derived, forget func()) *derived {
 
 // derived is the analysis of one window of the capture.
 type derived struct {
-	held   int64 // estimated bytes, for the cache's bound
-	events []event.Event
-	report processing.Report
-	graph  *processing.Graph
+	held     int64 // estimated bytes, for the cache's bound
+	events   []event.Event
+	report   processing.Report
+	graph    *processing.Graph
+	timeline processing.Timeline
 }
 
 // view returns the analysis for the window, building it on first use.
@@ -190,11 +198,16 @@ func (snap *snapshot) build(window time.Duration) *derived {
 		}
 	}
 
+	graph := processing.BuildGraph(events)
+	timeline := processing.BuildTimeline(events, buckets, tracks, nil)
+	processing.NodeActivity(graph, events, timeline.Start, timeline.End, strips)
+
 	return &derived{
-		held:   analysisBytes(len(events), copied),
-		events: events,
-		report: processing.Analyze(pids.Over(events)),
-		graph:  processing.BuildGraph(events),
+		held:     analysisBytes(len(events), copied),
+		events:   events,
+		report:   processing.Analyze(pids.Over(events)),
+		graph:    graph,
+		timeline: timeline,
 	}
 }
 
