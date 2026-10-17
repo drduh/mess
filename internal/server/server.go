@@ -4,6 +4,7 @@ package server
 import (
 	"embed"
 	"io/fs"
+	"slices"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -111,6 +112,7 @@ type derived struct {
 	report   processing.Report
 	graph    *processing.Graph
 	timeline processing.Timeline
+	newest   []int // indexes into events, newest first
 }
 
 // view returns the analysis for the window, building it on first use.
@@ -208,7 +210,22 @@ func (snap *snapshot) build(window time.Duration) *derived {
 		report:   processing.Analyze(pids.Over(events)),
 		graph:    graph,
 		timeline: timeline,
+		newest:   order(events),
 	}
+}
+
+// order indexes the events newest first.
+func order(events []event.Event) []int {
+	idx := make([]int, len(events))
+	for i := range idx {
+		idx[i] = i
+	}
+
+	slices.SortStableFunc(idx, func(a, b int) int {
+		return events[b].Time.Compare(events[a].Time)
+	})
+
+	return idx
 }
 
 // Reload re-reads the log files and replaces the snapshot.
