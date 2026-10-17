@@ -5,6 +5,7 @@ import (
 	"embed"
 	"io/fs"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/drduh/mess/internal/event"
@@ -14,6 +15,31 @@ import (
 
 //go:embed static/*.html
 var assets embed.FS
+
+const (
+	// Windows whose analysis is kept before the cache is started over.
+	windowCache = 12
+
+	// Bytes the cached windows may hold between them.
+	windowBudget = 256 << 20
+
+	// What one event.Event occupies, pinned by a test.
+	eventBytes = 408
+
+	// Fixed and per-event bytes an analysis retains.
+	analysisFixed    = 1_200_000
+	analysisPerEvent = 12
+)
+
+// analysisBytes estimates what one window's analysis holds.
+func analysisBytes(events int, copied bool) int64 {
+	n := int64(analysisFixed) + int64(events)*analysisPerEvent
+	if copied {
+		n += int64(events) * eventBytes
+	}
+
+	return n
+}
 
 type Server struct {
 	onRead func(name string)
@@ -41,6 +67,9 @@ type pending struct {
 	mu   sync.Mutex
 	done bool
 	d    *derived
+
+	// Estimated bytes held, zero while building.
+	size atomic.Int64
 }
 
 // get builds the analysis once and answers every caller with it.
@@ -61,12 +90,16 @@ func (p *pending) get(build func() *derived, forget func()) *derived {
 
 	d := build()
 	p.d, p.done, made = d, true, true
+	if d != nil {
+		p.size.Store(d.held)
+	}
 
 	return d
 }
 
 // derived is the analysis of one window of the capture.
 type derived struct {
+	held   int64 // estimated bytes, for the cache's bound
 	events []event.Event
 	report processing.Report
 	graph  *processing.Graph
@@ -75,6 +108,14 @@ type derived struct {
 // view returns the analysis for the window, building it on first use.
 func (snap *snapshot) view(window time.Duration) *derived {
 	snap.mu.Lock()
+	// Bound the cache, keeping the whole capture.
+	if len(snap.views) >= windowCache || snap.held() >= windowBudget {
+		whole, ok := snap.views[0]
+		snap.views = map[time.Duration]*pending{}
+		if ok {
+			snap.views[0] = whole
+		}
+	}
 	p, ok := snap.views[window]
 	if !ok {
 		p = &pending{}
@@ -85,6 +126,16 @@ func (snap *snapshot) view(window time.Duration) *derived {
 	return p.get(
 		func() *derived { return snap.build(window) },
 		func() { snap.forget(window, p) })
+}
+
+// held sums the finished analyses; call with snap.mu held.
+func (snap *snapshot) held() int64 {
+	var n int64
+	for _, p := range snap.views {
+		n += p.size.Load()
+	}
+
+	return n
 }
 
 // forget drops one window's entry.
@@ -122,11 +173,13 @@ func windowStarts(events []event.Event, cutoff time.Time) (int, bool) {
 // build is the whole analysis of one window.
 func (snap *snapshot) build(window time.Duration) *derived {
 	events := snap.loaded.Events
+	copied := false
 	if window > 0 {
 		cutoff := snap.last.Add(-window)
 		if at, ok := windowStarts(events, cutoff); ok {
 			events = events[at:len(events):len(events)]
 		} else {
+			copied = true
 			kept := make([]event.Event, 0, len(events)/4)
 			for i := range events {
 				if !events[i].Time.Before(cutoff) {
@@ -138,6 +191,7 @@ func (snap *snapshot) build(window time.Duration) *derived {
 	}
 
 	return &derived{
+		held:   analysisBytes(len(events), copied),
 		events: events,
 		report: processing.Analyze(pids.Over(events)),
 		graph:  processing.BuildGraph(events),
