@@ -4,6 +4,7 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+	"runtime/debug"
 	"strings"
 	"time"
 )
@@ -43,7 +44,35 @@ func (s *Server) Handler(addr string) http.Handler {
 	mux.HandleFunc("POST /api/reload", s.handleReload)
 	mux.HandleFunc("GET /api/report", s.handleReport)
 
-	return logRequests(s.ready(checkWindow(mux)))
+	// Recover inside the log, outside everything else.
+	return logRequests(recovering(s.ready(checkWindow(mux))))
+}
+
+// recovering answers a panic with 503.
+func recovering(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			v := recover()
+			if v == nil {
+				return
+			}
+
+			if v == http.ErrAbortHandler {
+				panic(v)
+			}
+
+			log.Printf("panic serving %s %s: %v\n%s",
+				forLog(r.Method), forLog(r.URL.RequestURI()), v, debug.Stack())
+
+			if rec, ok := w.(*logged); ok && rec.status != 0 {
+				return
+			}
+			http.Error(w, "the analysis could not be built for this request",
+				http.StatusServiceUnavailable)
+		}()
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func (s *Server) ready(next http.Handler) http.Handler {
