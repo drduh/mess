@@ -2,12 +2,26 @@
 package event
 
 import (
+	"math"
 	"path"
+	"strconv"
 	"strings"
 	"time"
 )
 
+// NoAUID is the audit uid of a session nobody logged in to.
 const NoAUID = ^uint32(0)
+
+// ParseUID reads a uid from a string such as "501" or "uid 501".
+func ParseUID(s string) (uint32, bool) {
+	s = strings.TrimSpace(strings.TrimPrefix(strings.TrimSpace(s), "uid "))
+	n, err := strconv.ParseUint(s, 10, 64)
+	if err != nil || n > math.MaxUint32 {
+		return 0, false
+	}
+
+	return uint32(n), true
+}
 
 type Event struct {
 	Time time.Time `json:"time"`

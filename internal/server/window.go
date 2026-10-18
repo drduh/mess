@@ -80,3 +80,37 @@ func checkWindow(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+// parseSlice reads the RFC 3339 from/to of a chart column.
+func parseSlice(r *http.Request) (from, to time.Time, err error) {
+	read := func(name string) (time.Time, error) {
+		raw := r.URL.Query().Get(name)
+		if raw == "" {
+			return time.Time{}, nil
+		}
+		t, err := time.Parse(time.RFC3339Nano, raw)
+		if err != nil {
+			return time.Time{}, fmt.Errorf("cannot read %s=%q as a time", name, raw)
+		}
+		return t, nil
+	}
+
+	if from, err = read("from"); err != nil {
+		return
+	}
+	to, err = read("to")
+
+	return
+}
+
+// within reports whether an event falls in a half open slice.
+func within(at, from, to time.Time) bool {
+	if !from.IsZero() && at.Before(from) {
+		return false
+	}
+	if !to.IsZero() && !at.Before(to) {
+		return false
+	}
+
+	return true
+}
