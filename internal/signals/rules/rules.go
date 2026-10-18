@@ -9,7 +9,7 @@ import (
 	"github.com/drduh/mess/internal/signals"
 )
 
-var All = mustAssemble(order, placeRules)
+var All = mustAssemble(order, placeRules, fileRules, identityRules)
 
 // order is the reading order: alert, then notice, then context.
 var order = []string{
@@ -17,12 +17,27 @@ var order = []string{
 	// Alerts
 	"ran_from_loose",
 	"script_from_loose",
+	"flagged_file",
+	"path_two_identities",
+	"world_writable_exec",
+	"group_writable_root",
+	"apple_id_third",
+	"same_code_two_paths",
 
 	// Notices
 	"hidden_path",
+	"edited_after_arrival",
 	"cwd_other_home",
+	"new_file",
 	"writable",
+	"adhoc",
+	"unsigned_caller",
 	"relative_argv0",
+	"group_writable_exec",
+	"changed_build",
+
+	// Context
+	"rosetta",
 }
 
 type split struct {
