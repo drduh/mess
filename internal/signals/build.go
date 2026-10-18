@@ -128,7 +128,11 @@ func (rs *rows) finish() Signal {
 	list := make([]Row, 0, len(rs.byKey))
 	for _, a := range rs.byKey {
 		a.Row.Marks = inOrder(a.marks, markOrder)
-		a.Row.Find = findFor(rs.rule.Scope, a.Row.Key)
+		if rs.rule.Find != nil {
+			a.Row.Find = rs.rule.Find(a.Row.Key)
+		} else {
+			a.Row.Find = findFor(rs.rule.Scope, a.Row.Key)
+		}
 		list = append(list, a.Row)
 	}
 

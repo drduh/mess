@@ -35,6 +35,9 @@ type Rule struct {
 	Match   func(e *Seen) string
 	Walk    func(c pids.Capture, emit func(e event.Event, key string, n int))
 	Measure func(e event.Event) int
+
+	// Find returns a row's search when the key is not plain text.
+	Find func(key string) string
 }
 
 var Scopes = map[string]string{
@@ -88,6 +91,9 @@ func (r Rule) Validate() error {
 	case r.Cap < 0:
 		return fmt.Errorf(
 			"rule %s: a negative cap keeps nothing", r.ID)
+	case r.Find != nil && r.Scope == "file":
+		return fmt.Errorf(
+			"rule %s: a row about a file has no search, so it cannot carry one", r.ID)
 	case r.Join != "" && Joins[r.Join] == "":
 		return fmt.Errorf(
 			"rule %s: join %q is not one of %s", r.ID, r.Join, joinWords())
