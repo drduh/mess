@@ -44,6 +44,7 @@ func (s *Server) Handler(addr string) http.Handler {
 	mux.HandleFunc("POST /api/reload", s.handleReload)
 	mux.HandleFunc("GET /api/report", s.handleReport)
 	mux.HandleFunc("GET /api/timeline", s.handleTimeline)
+	mux.HandleFunc("GET /api/events", s.handleEvents)
 	mux.HandleFunc("GET /api/nodes", s.handleNodes)
 	mux.HandleFunc("GET /api/node", s.handleNode)
 	mux.HandleFunc("GET /api/origins", s.handleOrigins)
