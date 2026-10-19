@@ -67,6 +67,5 @@ test-verbose: ARG_TEST = -v
 test test-race test-short test-verbose:
 	@$(TESTCMD) $(ARG_TEST) -timeout=$(TESTTIME) $(PKG)
 
-
 r: run
 serve: server
