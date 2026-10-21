@@ -19,6 +19,8 @@ const (
 	MakeExec         = "made executable"
 	ProfileChange    = "shell profile changed"
 	Mount            = "disk image mounted"
+	TrustChange      = "trust or traffic routing changed"
+	ConfigProfile    = "configuration profile changed"
 )
 
 var (
@@ -42,6 +44,8 @@ var (
 		"kextload", "kmutil load", "kmutil install",
 		"systemextensionsctl uninstall", "systemextensionsctl reset",
 		"systemextensionsctl developer",
+		"security authorizationdb write", "security authorizationdb remove",
+		"security authorizationdb reset",
 	}
 
 	inspects = []string{
@@ -49,6 +53,7 @@ var (
 		"csrutil status", "spctl --status", "fdesetup status",
 		"socketfilterfw --getglobalstate", "pfctl -s", "profiles list",
 		"systemsetup -get", "launchctl print-disabled", "nvram -p",
+		"security authorizationdb read",
 	}
 
 	accountVerbs = []string{
@@ -144,6 +149,8 @@ var concernRules = []concernRule{
 	{ProfileChange, changesProfile},
 
 	{Mount, mountsImage},
+	{TrustChange, changesTrust},
+	{ConfigProfile, changesConfigProfile},
 }
 
 func Concerns(cmd []string) []string {
@@ -341,12 +348,152 @@ func changesStartup(cmd []string, line string) bool {
 	return writers[tool] && hasAnyOf(line, startupDirs)
 }
 
+var trustVerbs = []string{
+	"security add-trusted-cert", "security remove-trusted-cert",
+	"security trust-settings-import",
+	"security user-trust-settings-enable -d", "security user-trust-settings-enable -e",
+}
+
+// routeFiles are the hosts file and /etc/resolver.
+var routeFiles = []string{"/etc/hosts", "/etc/resolver/"}
+
+// changesTrust is a trusted certificate, proxy, DNS or route file changed.
+func changesTrust(cmd []string, line string) bool {
+	if hasAnyOf(line, trustVerbs) {
+		return true
+	}
+
+	const tool = "networksetup "
+
+	for rest := line; ; {
+		i := strings.Index(rest, tool+"-set")
+		if i < 0 {
+			break
+		}
+		rest = rest[i+len(tool):]
+		verb, _, _ := strings.Cut(rest, " ")
+		if strings.Contains(verb, "proxy") || verb == "-setdnsservers" {
+			return true
+		}
+	}
+
+	return writesRouteFile(cmd, line)
+}
+
+// writesRouteFile is a write to the hosts file or a resolver.
+func writesRouteFile(cmd []string, line string) bool {
+	if redirectsInto(line, routeFiles) {
+		return true
+	}
+
+	if len(cmd) < 2 {
+		return false
+	}
+
+	args := cmd[1:]
+	switch Command(cmd[0]) {
+	case "tee", "vim", "vi", "nano", "emacs", "ed", "code", "rm", "chmod", "chown", "touch":
+		return argIn(args, routeFiles)
+	case "cp", "mv", "ln", "install":
+		return argIn(args[len(args)-1:], routeFiles)
+	case "sed", "perl":
+		for _, a := range args {
+			if inPlace(a) {
+				return argIn(args, routeFiles)
+			}
+		}
+	}
+
+	return false
+}
+
+// redirectsInto reports a shell redirection into one of the files.
+func redirectsInto(line string, files []string) bool {
+	for i := 0; i < len(line); i++ {
+		if line[i] != '>' {
+			continue
+		}
+
+		j := i + 1
+		for j < len(line) && (line[j] == '>' || line[j] == '|' || line[j] == ' ') {
+			j++
+		}
+
+		end := j
+		for end < len(line) && !strings.ContainsRune(" ;&)", rune(line[end])) {
+			end++
+		}
+
+		if hasAnyOf(strings.Trim(line[j:end], `"'`), files) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// argIn is whether any argument names one of the files, ignoring case.
+func argIn(args []string, files []string) bool {
+	for _, a := range args {
+		if hasAnyOf(strings.ToLower(a), files) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// inPlace is sed -i/-I, --in-place, or perl -i in a cluster.
+func inPlace(a string) bool {
+	if a == "--in-place" || strings.HasPrefix(a, "--in-place=") {
+		return true
+	}
+
+	if len(a) < 2 || a[0] != '-' || a[1] == '-' {
+		return false
+	}
+
+	flags, _, _ := strings.Cut(a[1:], ".")
+
+	return strings.ContainsAny(flags, "iI")
+}
+
+// profileVerbs change which configuration profiles are installed.
+var profileVerbs = map[string]bool{
+	"install": true, "remove": true, "sync": true, "renew": true,
+	"-I": true, "-R": true, "-N": true,
+}
+
+// changesConfigProfile is a profile installed, removed or opened for approval.
+func changesConfigProfile(cmd []string, _ string) bool {
+	switch Command(cmd[0]) {
+	case "profiles":
+		if len(cmd) > 1 && profileVerbs[cmd[1]] {
+			return true
+		}
+		for _, a := range cmd[1:] {
+			if strings.HasPrefix(a, "-") && profileVerbs[a] {
+				return true
+			}
+		}
+	case "open":
+		for _, a := range cmd[1:] {
+			if strings.HasSuffix(strings.ToLower(a), ".mobileconfig") {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
 func hasAnyOf(line string, want []string) bool {
 	for _, w := range want {
 		if strings.Contains(line, w) {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -356,6 +503,7 @@ func hasFlag(cmd []string, flag string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
