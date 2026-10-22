@@ -152,19 +152,19 @@ var openers = map[string]bool{
 
 // spawned are shells and interpreters.
 var spawned = map[string]bool{
-	"sh": true,
-	"zsh": true,
-	"ksh": true,
-	"bash": true,
-	"fish": true,
-	"dash": true,
-	"perl": true,
-	"ruby": true,
-	"node": true,
-	"curl": true,
-	"wget": true,
-	"python": true,
-	"python3": true,
+	"sh":        true,
+	"zsh":       true,
+	"ksh":       true,
+	"bash":      true,
+	"fish":      true,
+	"dash":      true,
+	"perl":      true,
+	"ruby":      true,
+	"node":      true,
+	"curl":      true,
+	"wget":      true,
+	"python":    true,
+	"python3":   true,
 	"osascript": true,
 }
 
