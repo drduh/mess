@@ -122,7 +122,7 @@ func TestCwdInAnotherHome(t *testing.T) {
 			Target: event.Target{Path: "/bin/ls", Sys: true}},
 		{Time: at(4), UID: 501, Path: "/bin/zsh", CWD: "/Users/Shared/box", Cmd: []string{"ls"},
 			Target: event.Target{Path: "/bin/ls", Sys: true}},
-		{Time: at(1), UID: 501, Path: "/bin/zsh",CWD: "/Users/a/src", Cmd: []string{"ls"},
+		{Time: at(1), UID: 501, Path: "/bin/zsh", CWD: "/Users/a/src", Cmd: []string{"ls"},
 			Target: event.Target{Path: "/bin/ls", Sys: true}},
 		{Time: at(5), UID: 502, Path: "/bin/zsh", CWD: "/Users/b/src", Cmd: []string{"ls"},
 			Target: event.Target{Path: "/bin/ls", Sys: true}},
