@@ -52,18 +52,18 @@ func TestLabellerReadsTheRightSide(t *testing.T) {
 			Path: "/usr/bin/git",
 			Sign: "org.git",
 			Team: "TEAM",
-			Sys: false,
+			Sys:  false,
 		},
 	}
 
 	l := newLabeller()
 	if got, want := l.caller(&e), signerLabel(
-			e.Sign, e.Team, e.Sys); got != want {
+		e.Sign, e.Team, e.Sys); got != want {
 		t.Errorf("caller = %q, want %q", got, want)
 	}
 
 	if got, want := l.image(&e), signerLabel(
-			e.Target.Sign, e.Target.Team, e.Target.Sys); got != want {
+		e.Target.Sign, e.Target.Team, e.Target.Sys); got != want {
 		t.Errorf("image = %q, want %q", got, want)
 	}
 
