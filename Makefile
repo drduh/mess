@@ -18,6 +18,10 @@ RELEASE_DIR := release
 TARGET      := $(RELEASE_DIR)/$(BINARY_NAME)-$(VERSION)-$(PLATFORM)
 
 TESTCMD      = $(GOCMD) test -trimpath
+TESTCOVER    = testCoverage
+TESTTIME    ?= 1m
+CMD_COVER    = $(TESTCMD) -coverprofile=$(TESTCOVER) $(PKG)
+
 ARG_TEST    ?=
 TESTTIME    ?= 1m
 
@@ -67,5 +71,26 @@ test-verbose: ARG_TEST = -v
 test test-race test-short test-verbose:
 	@$(TESTCMD) $(ARG_TEST) -timeout=$(TESTTIME) $(PKG)
 
+cover: test-cover
+	@$(GOCMD) tool cover -html="$(TESTCOVER)" -o "$(TESTCOVER).html"
+	@printf "total test coverage: %s" "$$($(GOCMD) tool cover -func="$(TESTCOVER)" | \
+		awk '/^total:/{print $$3}')"
+	@printf " - see %s\n" "$(TESTCOVER).html"
+
+test-cover:
+	@$(CMD_COVER)
+
+view-cover: cover
+	@open "$(TESTCOVER).html"
+
+b: build
+c: clean
+cealn: clean
+celan: clean
+clena: clean
+coen: coverage
+coveage: coverage
+coverae: coverage
+coverage: cover
 r: run
 serve: server

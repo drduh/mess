@@ -110,3 +110,12 @@ sudo rm -rf /var/log/mess
 ```
 
 Remove `/usr/bin/eslogger` from System Settings > Privacy & Security > Full Disk Access.
+
+## Troubleshooting
+
+If events do not appear in `/var/log/mess`, check `/var/log/mess/filterErr.log` - if `mkfifo: /usr/local/var/mess/events.fifo: File exists` is logged, run:
+
+```bash
+sudo rm -rf /usr/local/var/mess/events.fifo
+sudo launchctl kickstart -k system/local.mess.eslogger
+```
