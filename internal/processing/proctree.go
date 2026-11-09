@@ -138,8 +138,8 @@ func BuildProcTree(c pids.Capture) ProcTree {
 		top := &pbuild{}
 		fold(top, rootsByPPID[ppid], 0)
 		root := PRoot{
-			PPID: ppid,
-			Kids: emit(top, strconv.Itoa(ppid), &t, 1),
+			PPID:   ppid,
+			Kids:   emit(top, strconv.Itoa(ppid), &t, 1),
 			Caller: commonCaller(rootsByPPID[ppid]),
 		}
 		t.Roots = append(t.Roots, root)
