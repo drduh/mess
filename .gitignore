@@ -1,2 +1,11 @@
 .*
-release/
+!.github
+!.gitignore
+*.log
+*.pem
+*.out
+*.sh
+*.test
+main
+release
+testCoverage*
