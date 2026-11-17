@@ -19,11 +19,12 @@ TARGET      := $(RELEASE_DIR)/$(BINARY_NAME)-$(VERSION)-$(PLATFORM)
 
 TESTCMD      = $(GOCMD) test -trimpath
 TESTCOVER    = testCoverage
-TESTTIME    ?= 1m
 CMD_COVER    = $(TESTCMD) -coverprofile=$(TESTCOVER) $(PKG)
 
 ARG_TEST    ?=
 TESTTIME    ?= 1m
+
+PORT        ?= 8000
 
 all: fmt run
 
@@ -33,7 +34,7 @@ prep:
 build: prep
 	@GOOS=darwin GOARCH=arm64 $(GOCMD) build -o $(TARGET) $(SRC)
 
-server:  ARG += -serve 127.0.0.1:8080
+server:  ARG += -serve 127.0.0.1:$(PORT)
 version: ARG += -version
 
 run server version: build
